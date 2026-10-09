@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+<div class="container-fluid py-4 admin-dashboard">
+
+    <div class="dashboard-header">
+        <div>
+            <h1>Admin Dashboard</h1>
+            <p>Monitor bookings, revenue, users and theater performance.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-filter-card">
+        <form method="get" class="dashboard-filter-form">
+
+            <div class="filter-field">
+                <label for="start_date">Start Date</label>
+                <input
+                    type="date"
+                    id="start_date"
+                    name="start_date"
+                    value="{{ start_date|date:'Y-m-d' }}"
+                    required
+                >
+            </div>
+
+            <div class="filter-field">
+                <label for="end_date">End Date</label>
+                <input
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    value="{{ end_date|date:'Y-m-d' }}"
+                    required
+                >
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">
+                    Apply Filter
+                </button>
+
+                <a href="{% url 'export_dashboard_csv' %}?start_date={{ start_date|date:'Y-m-d' }}&end_date={{ end_date|date:'Y-m-d' }}"
+                   class="btn btn-outline-success">
+                    Export CSV
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Revenue Analytics</h2>
+
+        <div class="dashboard-grid revenue-grid">
+
+            <div class="dashboard-card">
+                <span>Daily Revenue</span>
+                <strong>₹{{ daily_revenue }}</strong>
+            </div>
+
+            <div class="dashboard-card">
+                <span>Weekly Revenue</span>
+                <strong>₹{{ weekly_revenue }}</strong>
+            </div>
+
+            <div class="dashboard-card">
+                <span>Monthly Revenue</span>
+                <strong>₹{{ monthly_revenue }}</strong>
+            </div>
+
+            <div class="dashboard-card">
+                <span>Yearly Revenue</span>
+                <strong>₹{{ yearly_revenue }}</strong>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Booking Statistics</h2>
+
+        <div class="dashboard-grid stats-grid">
+
+            <div class="dashboard-card">
+                <span>Total Bookings</span>
+                <strong>{{ total_bookings }}</strong>
+            </div>
+
+            <div class="dashboard-card">
+                <span>Total Users</span>
+                <strong>{{ total_users }}</strong>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>User Growth</h2>
+
+        <div class="dashboard-list-card">
+            {% if user_growth %}
+                {% for item in user_growth %}
+                    <div class="dashboard-list-row">
+                        <span>{{ item.date }}</span>
+                        <strong>{{ item.total }} new users</strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-dashboard">No user growth data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Booking Trends</h2>
+
+        <div class="dashboard-list-card">
+            {% if booking_trends %}
+                {% for trend in booking_trends %}
+                    <div class="dashboard-list-row">
+                        <span>{{ trend.date }}</span>
+                        <strong>{{ trend.total }} bookings</strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-dashboard">No booking data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Theater Occupancy</h2>
+
+        <div class="dashboard-list-card">
+            {% if theater_occupancy %}
+                {% for theater in theater_occupancy %}
+                    <div class="dashboard-list-row">
+                        <span>
+                            {{ theater.name }} - {{ theater.movie.name }}
+                        </span>
+                        <strong>
+                            {{ theater.occupancy_percentage }}%
+                            ({{ theater.booked_seats }}/{{ theater.total_seats }} seats)
+                        </strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-dashboard">No theater data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Most Booked Movies</h2>
+
+        <div class="dashboard-list-card">
+            {% if most_booked_movies %}
+                {% for movie in most_booked_movies %}
+                    <div class="dashboard-list-row">
+                        <span>{{ movie.name }}</span>
+                        <strong>{{ movie.total_bookings }} bookings</strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-dashboard">No movie booking data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Top-Performing Theaters</h2>
+
+        <div class="dashboard-list-card">
+            {% if top_performing_theaters %}
+                {% for theater in top_performing_theaters %}
+                    <div class="dashboard-list-row">
+                        <span>
+                            {{ theater.name }} - {{ theater.movie.name }}
+                        </span>
+                        <strong>{{ theater.total_bookings }} bookings</strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-dashboard">No theater booking data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Peak Booking Hours</h2>
+
+        <div class="dashboard-list-card">
+            {% if peak_booking_hours %}
+                {% for hour in peak_booking_hours %}
+                    <div class="dashboard-list-row">
+                        <span>{{ hour.hour }}:00</span>
+                        <strong>{{ hour.total }} bookings</strong>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="empty-dashboard">No booking data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="dashboard-section">
+        <h2>Cancellation & Refund Statistics</h2>
+
+        <div class="dashboard-grid stats-grid">
+
+            <div class="dashboard-card">
+                <span>Cancelled Payments</span>
+                <strong>{{ cancellation_statistics }}</strong>
+            </div>
+
+            <div class="dashboard-card">
+                <span>Refund Statistics</span>
+                <strong>{{ refund_statistics }}</strong>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+        color: #2f3542;
+    }
+
+    .admin-dashboard {
+        width: 100%;
+        max-width: 1450px;
+        margin: 0 auto;
+        padding: 32px 36px 50px;
+        min-height: 100vh;
+    }
+
+    /* Header */
+    .dashboard-header {
+        margin-bottom: 28px;
+    }
+
+    .dashboard-header h1 {
+        margin: 0 0 7px;
+        font-size: 34px;
+        line-height: 1.2;
+        font-weight: 700;
+        color: #202735;
+    }
+
+    .dashboard-header p {
+        margin: 0;
+        color: #6b7280;
+        font-size: 15px;
+    }
+
+    /* Filter */
+    .dashboard-filter-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 24px;
+        margin-bottom: 34px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .dashboard-filter-form {
+        display: grid;
+        grid-template-columns: 220px 220px auto;
+        align-items: end;
+        gap: 18px;
+    }
+
+    .filter-field {
+        width: 100%;
+    }
+
+    .filter-field label {
+        display: block;
+        margin-bottom: 8px;
+        color: #374151;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .filter-field input {
+        display: block;
+        width: 100%;
+        height: 44px;
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #374151;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .filter-field input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.10);
+    }
+
+    .filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 44px;
+    }
+
+    .filter-actions .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        padding: 0 18px;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: transform 0.2s ease, box-shadow 0.2s ease,
+                    background 0.2s ease;
+    }
+
+    .filter-actions .btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .filter-actions .btn-primary {
+        border: 1px solid #007bff;
+        background: #007bff;
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.16);
+    }
+
+    .filter-actions .btn-primary:hover {
+        background: #0069d9;
+        box-shadow: 0 6px 14px rgba(0, 123, 255, 0.22);
+    }
+
+    .filter-actions .btn-outline-success {
+        border: 1px solid #28a745;
+        background: #ffffff;
+        color: #218838;
+    }
+
+    .filter-actions .btn-outline-success:hover {
+        background: #f0fff4;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.12);
+    }
+
+    /* Sections */
+    .dashboard-section {
+        margin-bottom: 34px;
+    }
+
+    .dashboard-section h2 {
+        margin: 0 0 16px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e5e7eb;
+        color: #202735;
+        font-size: 21px;
+        line-height: 1.3;
+        font-weight: 700;
+    }
+
+    /* Analytics cards */
+    .dashboard-grid {
+        display: grid;
+        gap: 18px;
+    }
+
+    .revenue-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-card {
+        position: relative;
+        min-width: 0;
+        padding: 22px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-card::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: #007bff;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.09);
+    }
+
+    .dashboard-card span {
+        display: block;
+        margin-bottom: 9px;
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .dashboard-card strong {
+        display: block;
+        color: #202735;
+        font-size: 25px;
+        line-height: 1.2;
+        font-weight: 700;
+    }
+
+    /* Lists */
+    .dashboard-list-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .dashboard-list-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 24px;
+        min-height: 54px;
+        padding: 14px 20px;
+        border-bottom: 1px solid #edf0f2;
+        color: #555f6d;
+        font-size: 14px;
+    }
+
+    .dashboard-list-row:last-child {
+        border-bottom: none;
+    }
+
+    .dashboard-list-row span {
+        min-width: 0;
+    }
+
+    .dashboard-list-row strong {
+        color: #2f3542;
+        font-size: 14px;
+        font-weight: 600;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .dashboard-list-row:hover {
+        background: #fafbfc;
+    }
+
+    .empty-dashboard {
+        margin: 0;
+        padding: 28px;
+        color: #6b7280;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* Tablet */
+    @media (max-width: 1100px) {
+        .revenue-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .dashboard-filter-form {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .filter-actions {
+            grid-column: 1 / -1;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 650px) {
+        .admin-dashboard {
+            padding: 24px 16px 40px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+        }
+
+        .dashboard-filter-form {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-actions {
+            grid-column: auto;
+            width: 100%;
+        }
+
+        .filter-actions .btn {
+            flex: 1;
+        }
+
+        .revenue-grid,
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-list-row {
+            grid-template-columns: 1fr;
+            gap: 5px;
+        }
+
+        .dashboard-list-row strong {
+            text-align: left;
+            white-space: normal;
+        }
+    }
+</style>
+</body>
+</html>

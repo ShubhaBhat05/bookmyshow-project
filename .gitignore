@@ -1,0 +1,32 @@
+
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+venv312/
+.venv/
+
+# Django
+*.log
+
+# IDE and editor
+.vscode/
+.idea/
+
+# Test and coverage files
+.coverage
+htmlcov/
+
+# Local database
+db.sqlite3
+
+# Generated ticket PDFs
+media/tickets/

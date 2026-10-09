@@ -1,0 +1,13 @@
+
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <a href="{% url 'admin_dashboard' %}" class="button">
+        View Business Dashboard
+    </a>
+</div>
+
+{{ block.super }}
+{% endblock %}

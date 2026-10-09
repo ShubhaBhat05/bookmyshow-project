@@ -17,10 +17,12 @@
 }
 
 .movie-title {
-  font-size: 28px;
-  font-weight: bold;
+  font-size: 32px;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 20px;
+  color: #2f3542;
+  margin-bottom: 28px;
+  letter-spacing: 0.2px;
 }
 
 /* Theatre Info Styling */
@@ -28,16 +30,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 22px 24px;
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
-  flex-wrap: wrap; /* Responsive wrapping */
+  border: 1px solid #e9ecef;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theatre-info:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .theatre-info strong {
-  font-size: 18px;
+  font-size: 19px;
+  font-weight: 600;
+  color: #2f3542;
   flex: 1;
 }
 
@@ -46,10 +57,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
-  gap: 10px; /* Space between icons */
-  margin-top: 10px;
+  gap: 9px;
+  margin-top: 12px;
   flex: 2;
+  color: #666;
+  font-size: 13px;
 }
 
 .info-icons i {
@@ -71,45 +83,77 @@
 }
 
 .time-box {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px 20px;
+  border: 1px solid #e1e5ea;
+  border-radius: 10px;
+  padding: 12px 20px;
   text-align: center;
-  background-color: #f1f1f1;
+  background-color: #f8f9fa;
   margin-bottom: 10px;
   flex: 1;
   min-width: 100px;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .time-box:hover {
-  transform: scale(1.05);
-  background-color: #28a745;
-  color: white;
+  transform: translateY(-2px);
+  background-color: #ffffff;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.10);
 }
 
 .time-box span {
-  display: block;
-  font-size: 12px;
-  color: black;
+  display: inline-block;
+  margin-top: 7px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  background: #007bff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background 0.2s ease;
 }
+
 .time-box span:hover {
-  color: white;
+  background: #0056b3;
+  color: #ffffff;
 }
+
 
 /* Non-Cancellable Styling */
 .non-cancellable {
-  color: #ffc107;
+  color: #856404;
+  background: #fff8e1;
+  border: 1px solid #ffe8a1;
+  border-radius: 8px;
+  padding: 9px 12px;
   font-size: 12px;
   margin-top: 20px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  font-weight: 500;
 }
 
 .non-cancellable i {
-  margin-right: 5px;
+  margin-right: 7px;
+  font-size: 9px;
 }
 
+
+
+.no-theaters {
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 28px 20px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.no-theaters p {
+  margin: 0;
+  color: #666;
+  font-size: 15px;
+  font-weight: 500;
+}
 /* Responsive Styling */
 @media (max-width: 768px) {
   .theatre-info {

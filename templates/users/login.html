@@ -40,13 +40,13 @@
 
                         <!-- Submit Button -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-sign-in-alt me-2"></i> Login
+                            <button type="submit" class="btn btn-primary login-submit-btn">
+                                  <i class="fas fa-sign-in-alt me-2"></i> Login
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-center">
+                <div class="card-footer text-center login-footer">
                     <a href="{% url 'password_reset' %}" class="text-decoration-none">Forgot Password?</a>
                     <hr>
                     <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-decoration-none">Sign Up</a></p>
@@ -58,19 +58,49 @@
 
 <style>
     .card {
-        border-radius: 1rem;
-    }
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
     .card-header {
-        border-top-left-radius: 1rem;
-        border-top-right-radius: 1rem;
-    }
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    padding: 16px 20px;
+}
     .input-group-text {
-        background-color: #f8f9fa;
-    }
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    color: #6c757d;
+}
     .form-control:focus {
-        box-shadow: none;
-        border-color: #80bdff;
-    }
+    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.12);
+    border-color: #80bdff;
+}
+.login-submit-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 123, 255, 0.20);
+}
+.login-footer {
+    background: #ffffff;
+    border-top: 1px solid #eeeeee;
+    padding: 18px 20px;
+}
+
+.login-footer a {
+    font-weight: 500;
+}
+
+.login-footer hr {
+    margin: 14px 0;
+    border-color: #eeeeee;
+}
 </style>
 
 <script>

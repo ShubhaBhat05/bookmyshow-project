@@ -2,35 +2,151 @@
 
 {% block content %}
 <div class="container py-5">
-    <h1 class="text-center mb-5">Movies</h1>
+    <h1 class="movies-page-title">Movies</h1>
 
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <form method="GET" action="{% url 'movie_list' %}" class="search-bar">
-                <div class="input-group">
-                    <input
-                        class="form-control form-control-lg"
-                        name="search"
-                        placeholder="Search for Movies, Events, Plays, Sports and Activities"
-                        type="text"
-                        value="{{ request.GET.search|default_if_none:'' }}"
-                        aria-label="Search for movies"
-                    />
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </form>
+    <form method="get" action="{% url 'movie_list' %}" class="mb-4 movie-filter-form">
+
+    <div class="form-row">
+
+        <div class="form-group col-md-4">
+            <label>Search Movie</label>
+            <input type="text"
+                   name="search"
+                   class="form-control"
+                   placeholder="Search by movie title"
+                   value="{{ request.GET.search }}">
         </div>
+
+        <div class="form-group col-md-4">
+            <label>Genre</label>
+            <select name="genre" class="form-control">
+                <option value="">All Genres</option>
+                {% for item in genres %}
+                    <option value="{{ item.id }}"
+                        {% if request.GET.genre == item.id|stringformat:"s" %}selected{% endif %}>
+                        {{ item.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label>Language</label>
+            <select name="language" class="form-control">
+                <option value="">All Languages</option>
+                {% for item in languages %}
+                    <option value="{{ item.id }}"
+                        {% if request.GET.language == item.id|stringformat:"s" %}selected{% endif %}>
+                        {{ item.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
     </div>
 
+    <div class="form-row">
+
+        <div class="form-group col-md-4">
+            <label>City</label>
+            <select name="city" class="form-control">
+                <option value="">All Cities</option>
+                {% for item in cities %}
+                    <option value="{{ item }}"
+                        {% if request.GET.city == item %}selected{% endif %}>
+                        {{ item }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label>Theater</label>
+            <select name="theater" class="form-control">
+                <option value="">All Theaters</option>
+                {% for item in theaters %}
+                    <option value="{{ item.id }}"
+                        {% if request.GET.theater == item.id|stringformat:"s" %}selected{% endif %}>
+                        {{ item.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group col-md-4">
+            <label>Minimum Rating</label>
+            <select name="min_rating" class="form-control">
+                <option value="">Any Rating</option>
+                <option value="4" {% if request.GET.min_rating == "4" %}selected{% endif %}>4+ ⭐</option>
+                <option value="3" {% if request.GET.min_rating == "3" %}selected{% endif %}>3+ ⭐</option>
+                <option value="2" {% if request.GET.min_rating == "2" %}selected{% endif %}>2+ ⭐</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="form-row">
+
+        <div class="form-group col-md-3">
+            <label>Release From</label>
+            <input type="date"
+                   name="release_from"
+                   class="form-control"
+                   value="{{ request.GET.release_from }}">
+        </div>
+
+        <div class="form-group col-md-3">
+            <label>Release To</label>
+            <input type="date"
+                   name="release_to"
+                   class="form-control"
+                   value="{{ request.GET.release_to }}">
+        </div>
+
+        <div class="form-group col-md-3">
+            <label>Show Timing</label>
+            <select name="show_time" class="form-control">
+                <option value="">Any Time</option>
+                <option value="morning" {% if request.GET.show_time == "morning" %}selected{% endif %}>Morning</option>
+                <option value="afternoon" {% if request.GET.show_time == "afternoon" %}selected{% endif %}>Afternoon</option>
+                <option value="evening" {% if request.GET.show_time == "evening" %}selected{% endif %}>Evening</option>
+                <option value="night" {% if request.GET.show_time == "night" %}selected{% endif %}>Night</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-3">
+            <label>Sort By</label>
+            <select name="sort" class="form-control">
+                <option value="">Default</option>
+                <option value="popularity" {% if request.GET.sort == "popularity" %}selected{% endif %}>Popularity</option>
+                <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Newest Releases</option>
+                <option value="rating" {% if request.GET.sort == "rating" %}selected{% endif %}>Rating</option>
+                <option value="price_low" {% if request.GET.sort == "price_low" %}selected{% endif %}>Ticket Price: Low to High</option>
+                <option value="price_high" {% if request.GET.sort == "price_high" %}selected{% endif %}>Ticket Price: High to Low</option>
+            </select>
+        </div>
+
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        Apply Filters
+    </button>
+
+    <a href="{% url 'movie_list' %}" class="btn btn-secondary">
+        Clear
+    </a>
+
+</form>
+    <div class="movie-count">
+    {{ movie_count }} movies found
+</div>
     <div class="row" id="movieList">
         {% for movie in movies %}
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
-                <img src="{{ movie.image.url }}" class="card-img-top" alt="{{ movie.name }}" style="height: 300px; object-fit: cover;">
+                <img src="{{ movie.image.url }}"
+     class="card-img-top movie-poster"
+     alt="{{ movie.name }}">
                 <div class="card-body">
                     <h5 class="card-title">{{ movie.name }}</h5>
                     <p class="card-text">
@@ -43,7 +159,7 @@
                     </p>
                 </div>
                 <div class="card-footer bg-white border-top-0">
-                    <a href="{% url 'theater_list' movie.id %}" class="btn btn-outline-primary btn-block">
+                    <a href="{% url 'movie_detail' movie.id %}" class="btn btn-outline-primary btn-block"></a>
                         View Theaters <i class="fas fa-chevron-right ml-2"></i>
                     </a>
                 </div>
@@ -54,7 +170,105 @@
             <p class="lead">No movies found. Try a different search term.</p>
         </div>
         {% endfor %}
+        </div>
+    {% if movies.has_other_pages %}
+<nav aria-label="Movie pagination" class="mt-4 mb-5">
+    <ul class="pagination justify-content-center">
+
+        {% if movies.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ movies.previous_page_number }}">
+                Previous
+            </a>
+        </li>
+        {% endif %}
+
+        <li class="page-item active">
+            <span class="page-link">
+                Page {{ movies.number }} of {{ movies.paginator.num_pages }}
+            </span>
+        </li>
+
+        {% if movies.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?{{ request.GET.urlencode }}&page={{ movies.next_page_number }}">
+                Next
+            </a>
+        </li>
+        {% endif %}
+
+    </ul>
+</nav>
+{% endif %}
+
+   <!-- Trending Movies -->
+{% if trending_movies %}
+<div class="mt-5 mb-5 trending-section">
+
+    <h2 class="section-heading">Trending Movies</h2>
+
+    <div class="trending-carousel">
+
+        <button type="button"
+                class="trending-arrow trending-prev"
+                aria-label="Previous movies">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="trending-viewport">
+            <div class="trending-track">
+
+                {% for movie in trending_movies %}
+
+                <div class="trending-slide">
+
+                    <div class="card shadow-sm trending-card">
+
+                        {% if movie.image %}
+                        <img src="{{ movie.image.url }}"
+                             class="card-img-top movie-poster"
+                             alt="{{ movie.name }}">
+                        {% endif %}
+
+                        <div class="card-body">
+
+                            <h5 class="card-title">
+                                {{ movie.name }}
+                            </h5>
+
+                            <p class="card-text">
+                                <i class="fas fa-star text-warning"></i>
+                                {{ movie.rating|floatformat:1 }}
+                            </p>
+
+                            <a href="{% url 'movie_detail' movie.id %}"
+                               class="btn btn-outline-primary trending-view-btn">
+                                View Details
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <button type="button"
+                class="trending-arrow trending-next"
+                aria-label="Next movies">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
     </div>
+
+</div>
+{% endif %}
+    
+
 </div>
 
 <!-- Bootstrap JS and dependencies -->
@@ -67,12 +281,569 @@
 
 <style>
     .card {
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    }
+    width: 100%;
+    max-width: 330px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
     .card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15) !important;
     }
+
+    .card-img-top {
+        border-radius: 0;
+    }
+
+    .card-body {
+        padding: 12px 14px;
+    }
+
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .card-footer {
+        padding: 0 18px 18px;
+    }
+
+    .card-footer .btn {
+        border-radius: 7px;
+        font-weight: 500;
+    }
+    .movie-filter-form {
+    background: #f8f9fa;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.movie-filter-form label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 7px;
+}
+
+.movie-filter-form .form-control {
+    border-radius: 7px;
+    border: 1px solid #ced4da;
+    min-height: 44px;
+}
+
+.movie-filter-form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.15);
+}
+
+.movie-filter-form .btn {
+    border-radius: 7px;
+    font-weight: 500;
+    padding: 9px 18px;
+}
+.movies-page-title {
+    text-align: center;
+    font-size: 34px;
+    font-weight: 700;
+    color: #2f3542;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.movies-page-title::after {
+    content: "";
+    display: block;
+    width: 55px;
+    height: 3px;
+    background: #007bff;
+    margin: 10px auto 0;
+    border-radius: 3px;
+}
+
+.movie-count {
+    font-size: 17px;
+    font-weight: 600;
+    color: #343a40;
+    margin: 22px 0 16px;
+}
+.section-heading {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2f3542;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+}
+.movie-poster {
+    width: 100%;
+    height: 300px !important;
+    object-fit: contain !important;
+    display: block;
+    background: #f5f5f5;
+}
+/* ===== Professional Movie Filter UI ===== */
+
+.movie-filter-form {
+    background: #ffffff;
+    border: 1px solid #e4e7eb;
+    border-radius: 16px;
+    padding: 24px 26px;
+    margin-bottom: 28px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+}
+
+.movie-filter-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2f3542;
+    margin-bottom: 7px;
+}
+
+.movie-filter-form .form-group {
+    margin-bottom: 18px;
+}
+
+.movie-filter-form .form-control {
+    height: 46px;
+    border: 1px solid #d7dce2;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #343a40;
+    font-size: 15px;
+    padding: 9px 13px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movie-filter-form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
+    outline: none;
+}
+
+.movie-filter-form .form-control::placeholder {
+    color: #8a929b;
+}
+
+.movie-filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 2px;
+}
+
+.movie-filter-buttons .btn {
+    height: 44px;
+    padding: 0 22px;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.movie-filter-buttons .btn-primary {
+    background: #007bff;
+    border-color: #007bff;
+}
+
+.movie-filter-buttons .btn-primary:hover {
+    background: #0069d9;
+    border-color: #0069d9;
+}
+
+.movie-filter-buttons .btn-secondary {
+    background: #f1f3f5;
+    border-color: #d9dde2;
+    color: #495057;
+}
+
+.movie-filter-buttons .btn-secondary:hover {
+    background: #e9ecef;
+    color: #343a40;
+}
+@media (max-width: 576px) {
+
+    .movie-filter-form {
+        padding: 18px 15px;
+    }
+
+    .movies-page-title {
+        font-size: 28px;
+        margin-bottom: 24px;
+    }
+
+    .movie-filter-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .movie-filter-buttons .btn {
+        width: 100%;
+    }
+
+    .section-heading {
+        font-size: 21px;
+    }
+}
+.movie-filter-form {
+    padding: 15px;
+}
+
+.movie-filter-form .form-group {
+    margin-bottom: 12px;
+}
+
+.movie-filter-form .form-control {
+    height: 42px;
+    font-size: 14px;
+}
+
+.movie-filter-form label {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+@media (max-width: 767.98px) {
+
+    .movie-filter-form .form-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0 12px;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    .movie-filter-form .form-row > .form-group {
+        width: auto !important;
+        max-width: none !important;
+        flex: none !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 14px;
+    }
+
+    /* Search Movie should use the full row */
+    .movie-filter-form .form-row:first-of-type > .form-group:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .movie-filter-form .form-control {
+        width: 100% !important;
+    }
+}
+@media (max-width: 767.98px) {
+
+    /* =========================
+       MAIN MOVIES - MOBILE
+       ========================= */
+
+    #movieList {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px 8px;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #movieList > .col-md-4 {
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        flex: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    #movieList .card {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        height: auto !important;
+        margin: 0 !important;
+    }
+
+    #movieList .movie-poster {
+        width: 100% !important;
+        height: 180px !important;
+        object-fit: contain !important;
+        background: #f0dada;
+    }
+
+    #movieList .card-body {
+        min-width: 0 !important;
+        padding: 10px 8px;
+    }
+
+    #movieList .card-title {
+        font-size: 16px;
+        line-height: 1.3;
+    }
+
+    #movieList .card-body .card-text small {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    #movieList .card-footer {
+        padding: 0 8px 10px;
+    }
+
+    #movieList .card-footer .btn {
+        font-size: 12px;
+        padding: 6px 5px;
+        white-space: nowrap;
+    }
+
+
+    /* =========================
+       TRENDING MOVIES - MOBILE
+       ========================= */
+
+    .section-heading + .row {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 12px 8px;
+        width: 100% !important;
+        margin: 0 !important;
+    }
+
+    .section-heading + .row > .col-md-4 {
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        flex: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .section-heading + .row .card {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        height: auto !important;
+    }
+
+    .section-heading + .row .movie-poster {
+        width: 100% !important;
+        height: 180px !important;
+        object-fit: contain !important;
+    }
+  /* Trending Movies - align title, rating and button */
+/* Trending View Details button - mobile only */
+.section-heading + .row .btn {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 6px 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+}
+
+.section-heading + .row .card-body {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+}
+
+/* =========================================
+   TRENDING MOVIES CAROUSEL
+   3 CARDS VISIBLE - LAPTOP + MOBILE
+   ========================================= */
+
+.trending-carousel {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.trending-viewport {
+    width: 100%;
+    overflow: hidden;
+}
+
+.trending-track {
+    display: flex;
+    width: 100%;
+    transition: transform 0.35s ease;
+}
+
+.trending-slide {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+    box-sizing: border-box;
+    padding: 0 8px;
+}
+
+.trending-card {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+}
+
+/* Poster - laptop */
+.trending-card .movie-poster {
+    width: 100%;
+    height: 300px !important;
+    object-fit: contain !important;
+}
+
+/* Card content */
+.trending-card .card-body {
+    padding: 12px 14px;
+}
+
+.trending-card .card-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.trending-card .card-text {
+    margin-bottom: 12px;
+}
+
+/* View Details */
+.trending-view-btn {
+    display: inline-block !important;
+    width: auto !important;
+    min-width: 0 !important;
+    white-space: nowrap;
+    padding: 6px 10px;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+/* =========================================
+   ARROWS
+   ========================================= */
+
+.trending-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.16);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #2f3542;
+    cursor: pointer;
+}
+
+.trending-arrow:hover {
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.22);
+}
+
+.trending-prev {
+    left: 0;
+}
+
+.trending-next {
+    right: 0;
+}
+
+.trending-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 767.98px) {
+
+    .trending-slide {
+        padding: 0 4px;
+    }
+
+    .trending-card {
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .trending-card .movie-poster {
+        height: 180px !important;
+        object-fit: contain !important;
+    }
+
+    .trending-card .card-body {
+        padding: 8px 6px 10px;
+    }
+
+    .trending-card .card-title {
+        font-size: 14px;
+        line-height: 1.25;
+        margin-bottom: 8px;
+
+        overflow-wrap: anywhere;
+    }
+
+    .trending-card .card-text {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .trending-view-btn {
+        display: inline-block !important;
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+
+        padding: 5px 7px !important;
+
+        font-size: 11px !important;
+        line-height: 1.2;
+
+        white-space: nowrap;
+    }
+
+    .trending-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+}
+/* Normal Movies - Laptop/Desktop only */
+@media (min-width: 768px) {
+    #movieList .card {
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
+    }
+
+    #movieList .movie-poster {
+        width: 50px 50px;
+        aspect-ratio: 1/3;
+        height: auto !important;
+        object-fit: contain !important;
+        object-position: center;
+        max-height: 300px;
+        display: block;
+        background: #f0dada;
+    }
+}
 </style>
 
 <script>
@@ -96,6 +867,54 @@
             });
         });
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+    const track = document.querySelector(".trending-track");
+    const slides = document.querySelectorAll(".trending-slide");
+    const prevButton = document.querySelector(".trending-prev");
+    const nextButton = document.querySelector(".trending-next");
+
+    if (!track || !slides.length || !prevButton || !nextButton) {
+        return;
+    }
+
+    const visibleSlides = 3;
+    const maxPosition = Math.max(0, slides.length - visibleSlides);
+
+    let currentPosition = 0;
+
+    function updateCarousel() {
+
+        const slideWidth = 100 / visibleSlides;
+
+        track.style.transform =
+            "translateX(-" + (currentPosition * slideWidth) + "%)";
+
+        prevButton.disabled = currentPosition === 0;
+        nextButton.disabled = currentPosition === maxPosition;
+    }
+
+    nextButton.addEventListener("click", function () {
+
+        if (currentPosition < maxPosition) {
+            currentPosition++;
+            updateCarousel();
+        }
+
+    });
+
+    prevButton.addEventListener("click", function () {
+
+        if (currentPosition > 0) {
+            currentPosition--;
+            updateCarousel();
+        }
+
+    });
+
+    updateCarousel();
+});
 </script>
 <!-- <h1>Movies</h1>
 <ul>

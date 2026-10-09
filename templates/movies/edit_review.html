@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Review - {{ movie.name }}</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+
+                    <h3 class="mb-4">Edit Review</h3>
+
+                    <p class="text-muted">
+                        Editing your review for
+                        <strong>{{ movie.name }}</strong>
+                    </p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="rating">Rating</label>
+
+                            <select name="rating"
+                                    id="rating"
+                                    class="form-control"
+                                    required>
+
+                                <option value="1" {% if review.rating == 1 %}selected{% endif %}>
+                                    1 - Poor
+                                </option>
+
+                                <option value="2" {% if review.rating == 2 %}selected{% endif %}>
+                                    2 - Fair
+                                </option>
+
+                                <option value="3" {% if review.rating == 3 %}selected{% endif %}>
+                                    3 - Good
+                                </option>
+
+                                <option value="4" {% if review.rating == 4 %}selected{% endif %}>
+                                    4 - Very Good
+                                </option>
+
+                                <option value="5" {% if review.rating == 5 %}selected{% endif %}>
+                                    5 - Excellent
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="title">Review Title</label>
+
+                            <input type="text"
+                                   name="title"
+                                   id="title"
+                                   class="form-control"
+                                   value="{{ review.title }}"
+                                   required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="comment">Your Review</label>
+
+                            <textarea name="comment"
+                                      id="comment"
+                                      class="form-control"
+                                      rows="5"
+                                      required>{{ review.comment }}</textarea>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary">
+                            Update Review
+                        </button>
+
+                        <a href="{% url 'movie_detail' movie.id %}"
+                           class="btn btn-secondary ml-2">
+                            Cancel
+                        </a>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

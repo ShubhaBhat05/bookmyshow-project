@@ -36,13 +36,13 @@
                           </div>
                       {% endfor %}
                       <div class="d-grid gap-2">
-                          <button type="submit" class="btn btn-primary btn-lg">
+                          <button type="submit" class="btn btn-primary btn-lg register-submit-btn">
                               <i class="fas fa-user-plus me-2"></i> Register
                           </button>
                       </div>
                   </form>
               </div>
-              <div class="card-footer text-center">
+              <div class="card-footer text-center register-footer">
                   <p class="mb-0">Already have an account? <a href="{% url 'login' %}" class="text-decoration-none">Log In</a></p>
               </div>
           </div>
@@ -55,22 +55,57 @@
 
 <style>
   .card {
-      border-radius: 1rem;
-  }
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
   .card-header {
-      border-top-left-radius: 1rem;
-      border-top-right-radius: 1rem;
-  }
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    padding: 16px 20px;
+}
   .input-group-text {
-      background-color: #f8f9fa;
-  }
-  .form-control:focus {
-      box-shadow: none;
-      border-color: #80bdff;
-  }
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    color: #6c757d;
+}
+
+.form-control {
+    min-height: 44px;
+    border-color: #ced4da;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.12);
+    border-color: #80bdff;
+}
   .invalid-feedback {
       display: block;
   }
+  .register-submit-btn {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.register-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(0, 123, 255, 0.20);
+}
+.register-footer {
+    background: #ffffff;
+    border-top: 1px solid #eeeeee;
+    padding: 18px 20px;
+}
+
+.register-footer a {
+    font-weight: 500;
+}
+
+.register-footer p {
+    color: #6c757d;
+}
 </style>
 
 <script>

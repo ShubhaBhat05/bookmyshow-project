@@ -1,0 +1,1642 @@
+{% extends "users/basic.html" %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="payment-card">
+
+                <div class="payment-header">
+                    <h2>Complete Payment</h2>
+                    <p>Choose your preferred payment method</p>
+                </div>
+
+                <div class="payment-details">
+
+                    <div class="payment-detail-row">
+                        <span>Movie</span>
+                        <strong>{{ payment.movie.name }}</strong>
+                    </div>
+
+                    <div class="payment-detail-row">
+                        <span>Theater</span>
+                        <strong>{{ payment.theater.name }}</strong>
+                    </div>
+
+                    <div class="payment-detail-row amount-row">
+                        <span>Total Amount</span>
+                        <strong>₹{{ payment.amount }}</strong>
+                    </div>
+
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div class="payment-method-section">
+
+                    <h4>Choose Payment Method</h4>
+                    <p class="payment-method-subtitle">
+                        Select one option to continue
+                    </p>
+
+                    <div class="payment-methods">
+
+                        <div class="payment-method selected"
+                             data-method="pay_now">
+
+                            <div class="payment-method-icon">
+                                💳
+                            </div>
+
+                            <div class="payment-method-content">
+                                <h5>Pay Now</h5>
+                                <p>Pay securely through Razorpay</p>
+                            </div>
+
+                            <div class="payment-method-radio">
+                                <span></span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="payment-method"
+                             data-method="wallet">
+
+                            <div class="payment-method-icon">
+                                💰
+                            </div>
+
+                            <div class="payment-method-content">
+                                <h5>Wallet</h5>
+                                <p>Pay using an available wallet</p>
+                            </div>
+
+                            <div class="payment-method-radio">
+                                <span></span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="payment-method"
+                             data-method="pay_later">
+
+                            <div class="payment-method-icon">
+                                🕒
+                            </div>
+
+                            <div class="payment-method-content">
+                                <h5>Pay Later</h5>
+                                <p>Choose an available Pay Later option</p>
+                            </div>
+
+                            <div class="payment-method-radio">
+                                <span></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="payment-actions">
+
+                    <button id="pay-button" class="btn btn-success">
+                        Continue to Payment
+                    </button>
+
+                    <button id="cancel-button"
+                            class="btn btn-outline-secondary">
+                        Cancel Payment
+                    </button>
+
+                </div>
+
+                <p id="payment-message" class="payment-message"></p>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<style>
+
+  .payment-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+
+  .payment-header {
+    text-align: center;
+    padding: 28px 24px 22px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .payment-header h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #2f3542;
+  }
+
+  .payment-header p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .payment-details {
+    padding: 24px;
+  }
+
+  .payment-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .payment-detail-row span {
+    color: #6c757d;
+    font-size: 14px;
+  }
+
+  .payment-detail-row strong {
+    color: #2f3542;
+    font-size: 15px;
+    text-align: right;
+  }
+
+  .payment-detail-row.amount-row {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .amount-row strong {
+    font-size: 22px;
+    color: #28a745;
+  }
+
+
+  /* Payment Methods */
+
+  .payment-method-section {
+    padding: 4px 24px 24px;
+  }
+
+  .payment-method-section h4 {
+    margin: 0;
+    text-align: center;
+    font-size: 21px;
+    font-weight: 700;
+    color: #2f3542;
+  }
+
+  .payment-method-subtitle {
+    text-align: center;
+    color: #6c757d;
+    font-size: 13px;
+    margin: 6px 0 18px;
+  }
+
+  .payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .payment-method {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 18px;
+    border: 1px solid #e1e5ea;
+    border-radius: 12px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .payment-method:hover {
+    border-color: #007bff;
+    background: #f8fbff;
+    transform: translateY(-1px);
+  }
+
+  .payment-method.selected {
+    border-color: #007bff;
+    background: #f0f7ff;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.10);
+  }
+
+  .payment-method-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #eef4ff;
+    font-size: 21px;
+    flex-shrink: 0;
+  }
+
+  .payment-method-content {
+    flex: 1;
+  }
+
+  .payment-method-content h5 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2f3542;
+  }
+
+  .payment-method-content p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 13px;
+  }
+
+  .payment-method-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #adb5bd;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .payment-method.selected .payment-method-radio {
+    border-color: #007bff;
+  }
+
+  .payment-method.selected .payment-method-radio span {
+    width: 10px;
+    height: 10px;
+    background: #007bff;
+    border-radius: 50%;
+  }
+
+
+  /* Buttons */
+
+  .payment-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 24px 24px;
+  }
+
+  .payment-actions .btn {
+    min-width: 150px;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .payment-message {
+    text-align: center;
+    margin: 0;
+    padding: 0 24px 22px;
+    color: #dc3545;
+    font-size: 14px;
+  }
+#demo-payment-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+    }
+
+
+    .demo-payment-modal {
+        width: 100%;
+        max-width: 470px;
+        background: #ffffff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+
+
+    .demo-payment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 22px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+
+    .demo-payment-header strong {
+        display: block;
+        font-size: 17px;
+        color: #2f3542;
+    }
+
+
+    .demo-payment-header span {
+        display: block;
+        margin-top: 3px;
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+
+    .demo-close-button {
+        border: none;
+        background: transparent;
+        font-size: 28px;
+        color: #6c757d;
+        cursor: pointer;
+    }
+
+
+    .demo-payment-body {
+        padding: 24px;
+    }
+
+
+    .demo-payment-amount {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+
+    .demo-payment-amount span {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+
+    .demo-payment-amount strong {
+        font-size: 22px;
+        color: #28a745;
+    }
+
+
+    .demo-secure-label {
+        padding: 10px;
+        text-align: center;
+        border-radius: 8px;
+        background: #f0f7ff;
+        color: #007bff;
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+
+    .demo-payment-tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+
+    .demo-tab {
+        flex: 1;
+        border: 1px solid #dfe3e8;
+        background: #ffffff;
+        border-radius: 8px;
+        padding: 10px 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+
+    .demo-tab.active {
+        border-color: #007bff;
+        background: #f0f7ff;
+        color: #007bff;
+    }
+
+
+    .demo-method-form label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+
+    .demo-method-form input,
+    .demo-method-form select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 11px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        margin-bottom: 14px;
+        font-size: 14px;
+    }
+
+
+    .demo-input-row {
+        display: flex;
+        gap: 12px;
+    }
+
+
+    .demo-input-row > div {
+        flex: 1;
+    }
+
+
+    .demo-payment-error {
+        min-height: 20px;
+        margin: 2px 0 10px;
+        color: #dc3545;
+        font-size: 13px;
+        text-align: center;
+    }
+
+
+    .demo-pay-button {
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        padding: 12px;
+        background: #28a745;
+        color: rgb(46, 172, 107);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+
+    .demo-pay-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+
+    .demo-payment-note {
+        margin: 14px 0 0;
+        text-align: center;
+        color: #6c757d;
+        font-size: 11px;
+    }
+    .demo-payment-actions {
+     display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+.demo-pay-btn {
+    width: 190px;
+    padding: 14px 16px;
+    border: none;
+    border-radius: 8px;
+    background: #28a745;
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.demo-pay-btn:hover {
+    background: #19023d;
+}
+
+.demo-back-btn {
+    width: 130px;
+    padding: 14px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background: white;
+    color: #495057;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.demo-back-btn:hover {
+    background: #f5f5f5;
+}
+.demo-option-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px;
+    border: 1px solid #dfe3e8;
+    border-radius: 10px;
+    background: #f8fbff;
+}
+
+.demo-option-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: #eef4ff;
+    font-size: 20px;
+}
+
+.demo-option-card strong {
+    display: block;
+    font-size: 14px;
+    color: #2f3542;
+}
+
+.demo-option-card p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.demo-option-check {
+    margin-left: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #28a745;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.demo-safe-text {
+    margin: 12px 0 0;
+    text-align: center;
+    color: #6c757d;
+    font-size: 12px;
+}
+
+.demo-choice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.demo-choice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid #dfe3e8;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #ffffff;
+}
+
+.demo-choice:hover {
+    background: #f8fbff;
+}
+
+.demo-choice input {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+}
+.payment-success-screen {
+    text-align: center;
+    padding: 20px 10px 10px;
+}
+
+.success-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: #28a745;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.payment-success-screen h2 {
+    margin: 0 0 8px;
+    font-size: 24px;
+    color: #2f3542;
+}
+
+.success-message {
+    margin: 0 0 22px;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.success-details {
+    text-align: left;
+    border: 1px solid #e1e5ea;
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: #f8f9fa;
+    margin-bottom: 22px;
+}
+
+.success-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.success-detail-row + .success-detail-row {
+    border-top: 1px solid #e1e5ea;
+}
+
+.success-detail-row span {
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.success-detail-row strong {
+    color: #2f3542;
+    font-size: 13px;
+    text-align: right;
+    word-break: break-word;
+}
+
+.success-booking-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #007bff;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.success-booking-btn:hover {
+    background: #0069d9;
+}
+@media (max-width: 576px) {
+
+    .payment-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .payment-actions button,
+    .payment-actions a {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .demo-input-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .demo-input-row > div {
+        width: 100%;
+    }
+
+    .demo-pay-button {
+        width: 100%;
+    }
+}
+</style>
+<script>
+
+    const razorpayKey = "{{ razorpay_key }}";
+    const paymentId = "{{ payment.id }}";
+    const amount = "{{ payment.amount }}";
+    const testPayUrl = "{% url 'test_pay_now' payment.id %}";
+    let selectedPaymentMethod = "pay_now";
+
+
+    /* -----------------------------
+       Payment method selection
+    ----------------------------- */
+
+    document.querySelectorAll(".payment-method").forEach(function (method) {
+
+        method.addEventListener("click", function () {
+
+            document.querySelectorAll(".payment-method")
+                .forEach(function (item) {
+                    item.classList.remove("selected");
+                });
+
+            this.classList.add("selected");
+
+            selectedPaymentMethod = this.dataset.method;
+
+            updatePayButtonText();
+        });
+
+    });
+
+
+    function updatePayButtonText() {
+
+        const button = document.getElementById("pay-button");
+
+        if (selectedPaymentMethod === "pay_now") {
+
+            button.textContent = "Continue to Payment";
+
+        } else if (selectedPaymentMethod === "wallet") {
+
+            button.textContent = "Pay from Wallet";
+
+        } else if (selectedPaymentMethod === "pay_later") {
+
+            button.textContent = "Book Now & Pay Later";
+        }
+    }
+    async function processPayLater() {
+
+    const button = document.getElementById("pay-button");
+    const message = document.getElementById("payment-message");
+
+    button.disabled = true;
+    button.textContent = "Confirming Booking...";
+
+    try {
+
+        const response = await fetch(
+            "{% url 'pay_later_booking' payment.id %}",
+            {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                },
+                credentials: "same-origin",
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Unable to confirm Pay Later booking."
+            );
+        }
+
+        document.querySelector(".payment-card").innerHTML = `
+            <div class="payment-success-screen">
+
+                <div class="success-icon">✓</div>
+
+                <h2>Booking Confirmed</h2>
+
+                <p class="success-message">
+                    Your booking has been confirmed.
+                    Payment is pending.
+                </p>
+
+                <div class="success-details">
+
+                    <div class="success-detail-row">
+                        <span>Payment Method</span>
+                        <strong>Pay Later</strong>
+                    </div>
+
+                    <div class="success-detail-row">
+                        <span>Amount</span>
+                        <strong>
+                            ₹${parseFloat(amount).toFixed(2)}
+                        </strong>
+                    </div>
+
+                    <div class="success-detail-row">
+                        <span>Transaction ID</span>
+                        <strong>
+                            ${data.transaction_id}
+                        </strong>
+                    </div>
+
+                    <div class="success-detail-row">
+                        <span>Payment Status</span>
+                        <strong>Pending</strong>
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="success-booking-btn"
+                    onclick="window.location.href='/profile/'">
+                    View Booking
+                </button>
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        button.disabled = false;
+        button.textContent = "Book Now & Pay Later";
+
+        message.textContent = error.message;
+        message.style.color = "#dc3545";
+    }
+}
+    async function processWalletPayment() {
+
+    const button = document.getElementById("pay-button");
+    const message = document.getElementById("payment-message");
+
+    button.disabled = true;
+    button.textContent = "Processing Wallet Payment...";
+
+    try {
+
+        const response = await fetch(
+            "{% url 'wallet_payment' payment.id %}",
+            {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                },
+                credentials: "same-origin",
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+            throw new Error(
+                data.error || "Wallet payment failed."
+            );
+        }
+
+        document.querySelector(".payment-card").innerHTML = `
+            <div class="payment-success-screen">
+
+                <div class="success-icon">✓</div>
+
+                <h2>Payment Successful</h2>
+
+                <p class="success-message">
+                    Your booking has been confirmed
+                    using your wallet.
+                </p>
+
+                <div class="success-details">
+
+                    <div class="success-detail-row">
+                        <span>Payment Method</span>
+                        <strong>Wallet</strong>
+                    </div>
+
+                    <div class="success-detail-row">
+                        <span>Amount Paid</span>
+                        <strong>
+                            ₹${parseFloat(amount).toFixed(2)}
+                        </strong>
+                    </div>
+
+                    <div class="success-detail-row">
+                        <span>Transaction ID</span>
+                        <strong>
+                            ${data.transaction_id}
+                        </strong>
+                    </div>
+
+                    <div class="success-detail-row">
+                        <span>Remaining Wallet Balance</span>
+                        <strong>
+                            ₹${parseFloat(
+                                data.remaining_balance
+                            ).toFixed(2)}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="success-booking-btn"
+                    onclick="window.location.href='/profile/'">
+                    View Booking
+                </button>
+
+            </div>
+        `;
+
+    } catch (error) {
+
+        button.disabled = false;
+
+        button.textContent = "Pay from Wallet";
+
+        message.textContent = error.message;
+        message.style.color = "#dc3545";
+    }
+}
+
+    /* -----------------------------
+       Main payment button
+    ----------------------------- */
+
+    document.getElementById("pay-button")
+    .addEventListener("click", function () {
+
+        if (selectedPaymentMethod === "pay_now") {
+
+            openDemoPaymentGateway();
+
+        } else if (selectedPaymentMethod === "pay_later") {
+
+            processPayLater();
+
+        } else if (selectedPaymentMethod === "wallet") {
+
+    processWalletPayment();
+
+}
+
+    });
+
+
+    /* -----------------------------
+       Demo Payment Gateway
+    ----------------------------- */
+
+    function openDemoPaymentGateway() {
+
+    const overlay = document.createElement("div");
+
+    overlay.id = "demo-payment-overlay";
+
+    overlay.innerHTML = `
+        <div class="demo-payment-modal">
+
+            <div class="demo-payment-header">
+
+                <div>
+                    <strong>BookMyShow Clone</strong>
+                    <span>Secure Payment</span>
+                </div>
+
+                <button
+                    type="button"
+                    id="close-demo-payment"
+                    class="demo-close-button">
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="demo-payment-body">
+
+                <div class="demo-payment-amount">
+                    <span>Amount to Pay</span>
+
+                    <strong>
+                        ₹${parseFloat(amount).toFixed(2)}
+                    </strong>
+                </div>
+
+
+                <div class="demo-secure-label">
+                    🔒 Secure Demo Checkout
+                </div>
+
+
+                <div class="demo-payment-tabs">
+
+                    <button
+                        type="button"
+                        class="demo-tab active"
+                        data-demo-method="card">
+
+                        💳 Card
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="demo-tab"
+                        data-demo-method="upi">
+
+                        📱 UPI
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="demo-tab"
+                        data-demo-method="netbanking">
+
+                        🏦 Net Banking
+
+                    </button>
+
+                </div>
+
+
+                <!-- Card -->
+
+                <div
+                    id="demo-card-form"
+                    class="demo-method-form">
+
+                    <div class="demo-option-card">
+
+                        <div class="demo-option-icon">
+                            💳
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Credit / Debit Card
+                            </strong>
+
+                            <p>
+                                Secure test payment
+                            </p>
+
+                        </div>
+
+                        <span class="demo-option-check">
+                            ✓
+                        </span>
+
+                    </div>
+
+                    <p class="demo-safe-text">
+                        No card details are required in this
+                        demo payment environment.
+                    </p>
+
+                </div>
+
+
+                <!-- UPI -->
+
+                <div
+                    id="demo-upi-form"
+                    class="demo-method-form"
+                    style="display:none;">
+
+                    <label>
+                        Select UPI App
+                    </label>
+
+                    <div class="demo-choice-list">
+
+                        <label class="demo-choice">
+                            <input
+                                type="radio"
+                                name="demo-upi-app"
+                                value="Google Pay">
+
+                            <span>Google Pay</span>
+                        </label>
+
+
+                        <label class="demo-choice">
+                            <input
+                                type="radio"
+                                name="demo-upi-app"
+                                value="PhonePe">
+
+                            <span>PhonePe</span>
+                        </label>
+
+
+                        <label class="demo-choice">
+                            <input
+                                type="radio"
+                                name="demo-upi-app"
+                                value="Paytm">
+
+                            <span>Paytm</span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Net Banking -->
+
+                <div
+                    id="demo-netbanking-form"
+                    class="demo-method-form"
+                    style="display:none;">
+
+                    <label>
+                        Select Bank
+                    </label>
+
+                    <select id="demo-bank">
+
+                        <option value="">
+                            Select your bank
+                        </option>
+
+                        <option value="State Bank of India">
+                            State Bank of India
+                        </option>
+
+                        <option value="HDFC Bank">
+                            HDFC Bank
+                        </option>
+
+                        <option value="ICICI Bank">
+                            ICICI Bank
+                        </option>
+
+                        <option value="Axis Bank">
+                            Axis Bank
+                        </option>
+
+                        <option value="Kotak Mahindra Bank">
+                            Kotak Mahindra Bank
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <p
+                    id="demo-payment-error"
+                    class="demo-payment-error">
+                </p>
+
+
+                <div class="demo-payment-actions">
+
+                    <button
+                        type="button"
+                        id="demo-back-button"
+                        class="demo-back-btn">
+
+                        ← Back
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="demo-pay-button"
+                        class="demo-pay-btn">
+
+                        Pay ₹${parseFloat(amount).toFixed(2)}
+
+                    </button>
+
+                </div>
+
+
+                <p class="demo-payment-note">
+
+                    This is a test payment environment.
+                    No real money will be charged.
+
+                </p>
+
+            </div>
+
+        </div>
+    `;
+
+
+    document.body.appendChild(overlay);
+
+
+    /* -----------------------------
+       Close gateway
+    ----------------------------- */
+
+    document.getElementById("close-demo-payment")
+        .addEventListener("click", function () {
+
+            overlay.remove();
+
+        });
+
+
+    /* -----------------------------
+       Payment tabs
+    ----------------------------- */
+
+    document.querySelectorAll(".demo-tab")
+        .forEach(function (tab) {
+
+            tab.addEventListener("click", function () {
+
+                document.querySelectorAll(".demo-tab")
+                    .forEach(function (item) {
+
+                        item.classList.remove("active");
+
+                    });
+
+
+                this.classList.add("active");
+
+
+                const method =
+                    this.dataset.demoMethod;
+
+
+                document.getElementById("demo-card-form")
+                    .style.display =
+                    method === "card"
+                        ? "block"
+                        : "none";
+
+
+                document.getElementById("demo-upi-form")
+                    .style.display =
+                    method === "upi"
+                        ? "block"
+                        : "none";
+
+
+                document.getElementById("demo-netbanking-form")
+                    .style.display =
+                    method === "netbanking"
+                        ? "block"
+                        : "none";
+
+
+                document.getElementById(
+                    "demo-payment-error"
+                ).textContent = "";
+
+            });
+
+        });
+
+
+    /* -----------------------------
+       Demo payment
+    ----------------------------- */
+
+    document.getElementById("demo-pay-button")
+        .addEventListener("click", function () {
+
+            const activeTab =
+                document.querySelector(
+                    ".demo-tab.active"
+                );
+
+            const method =
+                activeTab.dataset.demoMethod;
+
+
+            const errorElement =
+                document.getElementById(
+                    "demo-payment-error"
+                );
+
+            errorElement.textContent = "";
+
+
+            /*
+             * UPI requires selecting an app.
+             */
+
+            if (method === "upi") {
+
+                const selectedUPI =
+                    document.querySelector(
+                        'input[name="demo-upi-app"]:checked'
+                    );
+
+                if (!selectedUPI) {
+
+                    errorElement.textContent =
+                        "Please select a UPI app.";
+
+                    return;
+
+                }
+
+            }
+
+
+            /*
+             * Net Banking requires selecting a bank.
+             */
+
+            if (method === "netbanking") {
+
+                const bank =
+                    document.getElementById(
+                        "demo-bank"
+                    ).value;
+
+                if (!bank) {
+
+                    errorElement.textContent =
+                        "Please select a bank.";
+
+                    return;
+
+                }
+
+            }
+
+
+            /*
+             * Card requires no sensitive details.
+             */
+
+            processDemoPayment();
+
+        });
+
+
+    /* -----------------------------
+       Back button
+    ----------------------------- */
+
+    document.getElementById("demo-back-button")
+        .addEventListener("click", function () {
+
+            overlay.remove();
+
+        });
+
+}
+
+
+    /* -----------------------------
+       Process demo Pay Now
+    ----------------------------- */
+
+    function processDemoPayment() {
+
+    const payButton =
+        document.getElementById("demo-pay-button");
+
+    const errorElement =
+        document.getElementById("demo-payment-error");
+
+
+    payButton.disabled = true;
+
+    payButton.textContent =
+        "Processing Payment...";
+
+    errorElement.textContent = "";
+
+
+    fetch(
+        testPayUrl,
+        {
+            method: "POST",
+
+            headers: {
+                "X-CSRFToken":
+                    getCookie("csrftoken")
+            }
+        }
+    )
+    .then(async function (response) {
+
+        const contentType =
+            response.headers.get("content-type") || "";
+
+
+        if (!contentType.includes("application/json")) {
+
+            throw new Error(
+                `Payment request failed (${response.status}).`
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Payment could not be completed."
+            );
+
+        }
+
+
+        return data;
+
+    })
+    .then(function (data) {
+
+        if (!data.success) {
+
+            throw new Error(
+                data.error ||
+                "Payment could not be completed."
+            );
+
+        }
+
+
+        const modal =
+    document.querySelector(".demo-payment-modal");
+
+modal.innerHTML = `
+    <div class="payment-success-screen">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>Payment Successful</h2>
+
+        <p class="success-message">
+            Your booking has been confirmed.
+        </p>
+
+        <div class="success-details">
+
+            <div class="success-detail-row">
+                <span>Transaction ID</span>
+                <strong>${data.transaction_id}</strong>
+            </div>
+
+            <div class="success-detail-row">
+                <span>Amount Paid</span>
+                <strong>₹${parseFloat(amount).toFixed(2)}</strong>
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="success-booking-btn"
+            onclick="window.location.href='/profile/'">
+
+            View Booking
+
+        </button>
+
+    </div>
+`;
+
+    })
+    .catch(function (error) {
+
+        console.error(
+            "Demo payment error:",
+            error
+        );
+
+
+        payButton.disabled = false;
+
+        payButton.textContent =
+            `Pay ₹${parseFloat(amount).toFixed(2)}`;
+
+
+        errorElement.textContent =
+            error.message ||
+            "Unable to process the payment. Please try again.";
+
+    });
+
+}
+
+
+    /* -----------------------------
+       Cancel payment
+    ----------------------------- */
+
+    document.getElementById("cancel-button")
+        .addEventListener(
+            "click",
+            cancelPayment
+        );
+
+
+    function cancelPayment() {
+
+    fetch(
+        "{% url 'cancel_payment' payment.id %}",
+        {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            }
+        }
+    )
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+
+        if (data.message) {
+
+            window.location.href =
+                "{% url 'book_seats' payment.theater.id %}";
+
+        } else {
+
+            document.getElementById(
+                "payment-message"
+            ).textContent =
+                data.error || "Unable to cancel payment.";
+        }
+
+    })
+    .catch(function () {
+
+        document.getElementById(
+            "payment-message"
+        ).textContent =
+            "Unable to cancel payment. Please try again.";
+
+    });
+}
+
+
+    /* -----------------------------
+       CSRF
+    ----------------------------- */
+
+    function getCookie(name) {
+
+        let cookieValue = null;
+
+
+        if (
+            document.cookie &&
+            document.cookie !== ""
+        ) {
+
+            const cookies =
+                document.cookie.split(";");
+
+
+            for (
+                let cookie of cookies
+            ) {
+
+                cookie = cookie.trim();
+
+
+                if (
+                    cookie.substring(
+                        0,
+                        name.length + 1
+                    ) === name + "="
+                ) {
+
+                    cookieValue =
+                        decodeURIComponent(
+                            cookie.substring(
+                                name.length + 1
+                            )
+                        );
+
+                    break;
+                }
+
+            }
+
+        }
+
+
+        return cookieValue;
+
+    }
+
+</script>
+
+{% endblock %}
