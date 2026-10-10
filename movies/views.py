@@ -300,10 +300,8 @@ def book_seats(request, theater_id):
             )
 )
 
-        release_expired_seats.apply_async(
-            args=[list(selected_ids), request.user.id],
-            countdown=120,
-        )
+        # Expired reservations are cleared by the
+        # seat booking and availability views.
 
         return redirect(
         'payment_page',
@@ -1244,14 +1242,8 @@ def retry_payment(request, payment_id):
 
         new_payment.seats.set(seats)
 
-    release_expired_seats.apply_async(
-        args=[
-            [seat.id for seat in seats],
-            request.user.id,
-        ],
-        countdown=120,
-    )
-
+        # Expired reservations are cleared by
+        # the seat booking and availability views.
     return redirect(
         'payment_page',
         payment_id=new_payment.id,
