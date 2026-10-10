@@ -15,3 +15,4 @@ reportlab
 razorpay
 django-storages[s3]
 boto3
+whitenoise==6.6.0

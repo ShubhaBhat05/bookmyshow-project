@@ -30,3 +30,12 @@ db.sqlite3
 
 # Generated ticket PDFs
 media/tickets/
+
+# Generated Django static files
+staticfiles/
+
+# Local database backup
+bookmyshow_backup.dump
+
+# Temporary media upload script
+upload_media.py
