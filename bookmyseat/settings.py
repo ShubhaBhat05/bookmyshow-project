@@ -77,6 +77,7 @@ AWS_S3_ENDPOINT_URL = config('AWS_ENDPOINT_URL_S3', default='')
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default='')
 AWS_S3_REGION_NAME = config('AWS_REGION', default='ap-southeast-1')
+AWS_S3_ADDRESSING_STYLE = 'path'
 AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = True
 AWS_S3_FILE_OVERWRITE = False
