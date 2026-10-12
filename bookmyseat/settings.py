@@ -70,7 +70,7 @@ AUTH_USER_MODEL='auth.User'
 
 EMAIL_BACKEND = config(
     'EMAIL_BACKEND',
-    default='django.core.mail.backends.console.EmailBackend',
+   default='bookmyseat.email_backend.EmailBackend',
 )
 
 EMAIL_HOST = config('EMAIL_HOST', default='')
